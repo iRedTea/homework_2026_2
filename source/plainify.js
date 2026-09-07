@@ -22,6 +22,12 @@ const plainify = (originalObject) => {
 
     const result = {};
 
+    /**
+     * Рекурсивно разворачивает вложенный объект в result
+     * @param {Object} obj - текущий уровень объекта
+     * @param {string} [prefix=''] - префикс ключа
+     * @returns {void}
+     */
     const flatten = (obj, prefix = '') => {
         for (const [key, value] of Object.entries(obj)) {
             const fullKey = prefix ? `${prefix}.${key}` : key;
