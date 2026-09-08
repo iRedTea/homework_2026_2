@@ -6,6 +6,8 @@
  * Массивы, null и undefined сохраняются как значения и не разворачиваются.
  * Исходный объект не изменяется. Значения в результате — ссылки на те же данные
  * (массивы и другие не-объектные значения не копируются глубоко).
+ * Если точка уже есть в ключе и совпадает с путём из вложенности (например, `'a.b'` и `a: { b: ... }`),
+ * ключи считаются одинаковыми — побеждает последнее записанное значение.
  *
  * @param {Object} originalObject - объект с вложенными свойствами
  *
@@ -29,7 +31,7 @@ const plainify = (originalObject) => {
      * @returns {void}
      */
     const flatten = (obj, prefix = '') => {
-        for (const [key, value] of Object.entries(obj)) {
+        Object.entries(obj).forEach(([key, value]) => {
             const fullKey = prefix ? `${prefix}.${key}` : key;
 
             if (value !== null && typeof value === 'object' && !Array.isArray(value)) {
@@ -37,7 +39,7 @@ const plainify = (originalObject) => {
             } else {
                 result[fullKey] = value;
             }
-        }
+        });
     };
 
     flatten(originalObject);

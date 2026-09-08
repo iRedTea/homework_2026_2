@@ -146,4 +146,11 @@ QUnit.module('Тестируем функцию plainify', () => {
     QUnit.test('Возвращает пустой объект для массива на верхнем уровне', (assert) => {
         assert.deepEqual(plainify([1, 2, 3]), {}, 'массив на входе должен давать {}');
     });
+
+    QUnit.test('При коллизии ключей с точкой побеждает последнее значение', (assert) => {
+        const originalObject = { 'a.b': 1, a: { b: 2 } };
+        const result = plainify(originalObject);
+
+        assert.deepEqual(result, { 'a.b': 2 }, 'Ключ из вложенности перезаписывает ключ с точкой в имени');
+    });
 });
