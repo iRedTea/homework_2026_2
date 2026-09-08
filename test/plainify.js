@@ -84,6 +84,27 @@ QUnit.module('Тестируем функцию plainify', () => {
         assert.deepEqual(result, { a: [1, 2, 3], 'b.c': ['x', 'y'] }, 'Массивы должны оставаться значениями');
     });
 
+    QUnit.test('Не разворачивает Date Map Set RegExp', (assert) => {
+        const created = new Date('2020-01-01');
+        const tags = new Set(['js']);
+        const meta = new Map([['version', 1]]);
+        const pattern = /test/u;
+        const originalObject = {
+            id: 1,
+            created,
+            nested: { tags, meta, pattern }
+        };
+        const result = plainify(originalObject);
+
+        assert.deepEqual(result, {
+            id: 1,
+            created,
+            'nested.tags': tags,
+            'nested.meta': meta,
+            'nested.pattern': pattern
+        }, 'Встроенные объекты должны сохраняться как значения');
+    });
+
     QUnit.test('Работает с falsy-примитивами', (assert) => {
         const originalObject = { a: 0, b: false, c: '', d: { e: 0 } };
         const result = plainify(originalObject);
