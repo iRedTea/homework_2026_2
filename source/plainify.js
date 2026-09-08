@@ -1,6 +1,13 @@
 'use strict';
 
 /**
+ * Проверяет, является ли значение обычным объектом (не null и не массив)
+ * @param {*} value - проверяемое значение
+ * @returns {boolean}
+ */
+const isPlainObject = (value) => value !== null && typeof value === 'object' && !Array.isArray(value);
+
+/**
  * Функция, преобразующая вложенный объект в plain-объект.
  * Собственные вложенные объекты разворачиваются в ключи с точкой (например, `b.c`).
  * Массивы, null и undefined сохраняются как значения и не разворачиваются.
@@ -18,7 +25,7 @@
  * @returns {Object} plain-объект или пустой объект при некорректном входе
  */
 const plainify = (originalObject) => {
-    if (originalObject === null || typeof originalObject !== 'object' || Array.isArray(originalObject)) {
+    if (!isPlainObject(originalObject)) {
         return {};
     }
 
@@ -34,7 +41,7 @@ const plainify = (originalObject) => {
         Object.entries(obj).forEach(([key, value]) => {
             const fullKey = prefix ? `${prefix}.${key}` : key;
 
-            if (value !== null && typeof value === 'object' && !Array.isArray(value)) {
+            if (isPlainObject(value)) {
                 flatten(value, fullKey);
             } else {
                 result[fullKey] = value;
