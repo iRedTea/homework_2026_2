@@ -99,12 +99,12 @@ QUnit.module('Тестируем функцию plainify', () => {
     });
 
     QUnit.test('Не изменяет исходный объект', (assert) => {
-        const originalObject = { a: { b: 1 } };
-        const snapshot = JSON.stringify(originalObject);
+        const originalObject = { a: { b: 1 }, c: undefined };
+        const snapshot = structuredClone(originalObject);
 
         plainify(originalObject);
 
-        assert.strictEqual(JSON.stringify(originalObject), snapshot, 'Исходный объект не должен изменяться');
+        assert.deepEqual(originalObject, snapshot, 'Исходный объект не должен изменяться');
     });
 
     QUnit.test('Не копирует массивы глубоко — значения остаются общими', (assert) => {
