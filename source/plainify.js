@@ -13,6 +13,28 @@ const isPlainObject = (value) => (
 );
 
 /**
+ * Рекурсивно разворачивает вложенный объект
+ * @param {Object} obj - текущий уровень объекта
+ * @param {string} [prefix=''] - префикс ключа
+ * @returns {Object}
+ */
+const flatten = (obj, prefix = '') => {
+    const result = {};
+
+    Object.entries(obj).forEach(([key, value]) => {
+        const fullKey = prefix ? `${prefix}.${key}` : key;
+
+        if (isPlainObject(value)) {
+            Object.assign(result, flatten(value, fullKey));
+        } else {
+            result[fullKey] = value;
+        }
+    });
+
+    return result;
+};
+
+/**
  * Функция, преобразующая вложенный объект в plain-объект.
  * Собственные вложенные объекты разворачиваются в ключи с точкой (например, `b.c`).
  * Массивы, null и undefined сохраняются как значения и не разворачиваются.
@@ -36,26 +58,5 @@ const plainify = (originalObject) => {
         return {};
     }
 
-    const result = {};
-
-    /**
-     * Рекурсивно разворачивает вложенный объект в result
-     * @param {Object} obj - текущий уровень объекта
-     * @param {string} [prefix=''] - префикс ключа
-     * @returns {void}
-     */
-    const flatten = (obj, prefix = '') => {
-        Object.entries(obj).forEach(([key, value]) => {
-            const fullKey = prefix ? `${prefix}.${key}` : key;
-
-            if (isPlainObject(value)) {
-                flatten(value, fullKey);
-            } else {
-                result[fullKey] = value;
-            }
-        });
-    };
-
-    flatten(originalObject);
-    return result;
+    return flatten(originalObject);
 };
